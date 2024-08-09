@@ -1,0 +1,58 @@
+.NavBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 30px;
+    color: #fff;
+    background-color: #2b3035;
+    font-style: italic;
+}
+
+.MainNav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.MainNav h3 {
+    font-size: 25px;
+}
+
+.MainNav .link-group {
+    display: flex;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.MainNav .link-group .link{
+    text-decoration: none;
+    color: #afb19a;
+    font-style: normal;
+    transition: .3s;
+}
+
+.MainNav .link-group .link:hover {
+    color: #f7f7f3;
+}
+
+.Additional{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+}
+.Additional .Link-Additional {
+    color: #c2d4e2;
+    transition: .3s;
+    text-decoration: none;
+    font-style: normal;
+}
+.Additional .dropdownMenu {
+    color: #c2d4e2 !important;
+    transition: .3s;
+    cursor:pointer;
+    font-style: normal;
+}
+
+.Additional .dropdownMenu:hover,.Additional .Link-Additional:hover {
+    color: #9099a0;
+}

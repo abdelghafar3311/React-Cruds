@@ -1,0 +1,7 @@
+.containerAddProduct{
+    padding: 10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    background-color: #f7f7f7;
+}

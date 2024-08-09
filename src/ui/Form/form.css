@@ -1,0 +1,18 @@
+.control-form {
+    margin: 15px;
+}
+
+.group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.total{
+    background-color: #0097ff;
+    display: inline-block;
+    padding: 2px;
+    border-radius: 5px;
+    color: #fff;
+    letter-spacing: 2px;
+}

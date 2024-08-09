@@ -1,0 +1,51 @@
+
+.TableCR{
+    overflow-y: auto;
+}
+
+.TableCR input{
+    border: 1px solid #c4c4c4;
+    padding: 3px;
+    outline: none;
+    transition: .3s;
+    background-color: #fff;
+}
+
+.TableCR input:focus {
+    border: 1px solid #0051ff;
+}
+.headerTables{
+    display: flex;
+    justify-content: space-between;
+}
+.headerTables .AddForm button{
+    padding: 5px;
+    border: 0;
+    border-radius: 0 2px 2px 0;
+    background-color: #e7e7e7;
+    color: #000;
+    cursor: pointer;
+    transition: .3s;
+}
+.headerTables .AddForm button:hover {
+    background-color: #acb4c4;
+}
+.headerTables .AddForm input{
+    padding: 5px;
+    border: 0;
+    border-radius: 2px 0px 0px 2px;
+    background-color: #e7e7e7;
+    outline: none;
+}
+
+.thContainer td{
+    padding: 10px;
+
+}
+
+.btnServerUpload {
+    padding: 10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}

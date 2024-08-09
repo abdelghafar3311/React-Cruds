@@ -1,0 +1,35 @@
+.paginationContent{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.container{
+    background-color: #fff;
+}
+
+.tableHomePage {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #a2a2a2;
+    margin-bottom: 10px;
+}
+
+
+
+.tableHomePage th, .tableHomePage td {
+    border: 1px solid #a2a2a2;
+    padding: 10px;
+    text-align: center;
+}
+
+.tableHomePage th{
+    background-color: #253040;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.rtm {
+    overflow-y: auto;
+    width: 100%;
+}

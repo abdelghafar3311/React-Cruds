@@ -1,0 +1,21 @@
+.sectionCards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.card{
+    padding: 20px;
+    border-radius: 5px;
+    width: 18rem;
+    color: #fff;
+}
+
+.card .title,.card .details {
+    text-align: center;
+}
+

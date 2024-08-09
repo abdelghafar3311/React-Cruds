@@ -1,0 +1,188 @@
+.CONTAINER-SEARCH-MODE {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* justify-content: center; */
+    align-items: center;
+    padding-top: 10px;
+}
+
+.CONTAINER-SEARCH-MODE header{
+    position: relative;
+}
+
+.CONTAINER-SEARCH-MODE header .container-search {
+    display: flex;
+    padding: 10px;
+    background-color: #cbd3dc7d;
+    height: 40px;
+    gap: 10px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    width: 80vw;
+    border-radius: 25px;
+}
+
+.CONTAINER-SEARCH-MODE header .container-search input {
+    border: 0;
+    background-color: transparent;
+    width: 90%;
+    outline: none;
+}
+.CONTAINER-SEARCH-MODE header .container-search .subTitle
+{
+    display: flex;
+    gap: 2px;
+    align-items: self-end;
+    padding: 4px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.CONTAINER-SEARCH-MODE header .container-search .subTitle .resChose 
+{
+    display: flex;
+    width: 25px;
+    height: 25px;
+    background-color: #099;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: #fff;
+}
+
+.CONTAINER-SEARCH-MODE header .container-search .subTitle .iconDown {
+    font-size: 10px;
+}
+
+.CONTAINER-SEARCH-MODE header .list {
+    position: absolute;
+    right: 31px;
+    background-color: #cbd3dc7d;
+    border-radius: 5px;
+    padding: 2px;
+    z-index: 25;
+    display: none;
+    overflow: hidden;
+    animation: effHight .3s linear;
+}
+
+@keyframes effHight {
+    0%{
+        height: 0px;
+    }
+    100%{
+        height: 92px;
+    }
+}
+
+.CONTAINER-SEARCH-MODE header .list.show{
+    display: block;
+}
+
+.CONTAINER-SEARCH-MODE header .list .item {
+    width: 220px;
+    background-color: transparent;
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.CONTAINER-SEARCH-MODE header .list .item:hover {
+    background-color: #aeb7c27d;
+}
+
+/* container results */
+.CONTAINER-SEARCH-MODE .container-result-data
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data
+{
+    border: 1px solid #d9dde0;
+    background-color: #fff;
+    border-radius: 5px;
+    width: 450px;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data header 
+{
+    padding: 10px;
+    background-color: #e4f1ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    border-bottom: 1px solid #d9dde0;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data header h3 {
+    font-size: 18px;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data header p
+{
+    color: #099;
+    font-size: 12px;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data section {
+    padding: 10px;
+    border-bottom: 1px solid #d9dde0;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data section p{
+    font-weight: bold;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data section p span {
+    color: #099;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer {
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+    gap: 5px;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer button,
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer .button
+{
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer .button {
+    color: #099;
+    text-decoration: none;
+}
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer button:nth-child(2) {
+    color: #ff040c;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer button:nth-child(3) {
+    color: #0436ff;
+}
+
+.CONTAINER-SEARCH-MODE .container-result-data .card-data footer button:last-child {
+    color: #087e10;
+}
+
+.select{
+    background-color: #000000;
+    color: #fff;
+}

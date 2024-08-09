@@ -1,0 +1,34 @@
+.npPages{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+}
+
+.npPages .button{
+    border: 0;
+    background-color: #d8decd;
+    color: #fff;
+    padding: 5px;
+    cursor: not-allowed;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.npPages .button.act {
+   background-color: #0097ff; 
+   cursor: pointer;
+   transition: .3s;
+}
+
+.npPages .button.act:hover {
+    background-color: #0068ae;
+}
+
+.npPages .wh {
+    color: #fff;
+}
