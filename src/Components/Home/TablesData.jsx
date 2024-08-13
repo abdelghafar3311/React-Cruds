@@ -23,12 +23,21 @@ function TablesData() {
   const [itemOffset, setItemOffset] = useState(0);
   
   const [show, setShow] = useState(false);
+  const [ShowMod, setShowMod] = useState(false)
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const ShowModule = () => setShowMod(true);
+  const CloseModule = () => setShowMod(false);
+
+
+
+
   const [getId, setGetId] = useState(0)
   const [numberSell, setNumberSell] = useState(2)
+
+  const [catchActive, setCatchActive] = useState({type: "",massage: "",id: ""})
 
   const Limit = 8;
   const endOffset = itemOffset + Limit;
@@ -42,6 +51,8 @@ function TablesData() {
     );
     setItemOffset(newOffset);
   };
+  // ----------------------------------------------------------- //
+
 
   function getIndexItem(id) {
     let index = -1; 
@@ -62,14 +73,22 @@ function TablesData() {
         break; 
       }
     }
+    const pro = dataF.products.length > 0? dataF.products : [];
+    dataF.setMoneySystem(mon => {
+      let money = mon;
+      money = pro.length > 0? +money + (((+pro[index].price + +pro[index].taxes + +pro[index].ads)) * +pro[index].count) : money;
+      window.localStorage.moneySystem = money;
+      return money;
+    })
+
+    dataF.setBuys(i => {
+      let ii = i;
+      ii = +ii - (((+pro[index].price + +pro[index].taxes + +pro[index].ads)) * +pro[index].count);
+      window.localStorage.systemDetailsBuys = ii;
+      return ii;
+    })
     dataF.setProducts(prev => {
       let d = [...prev];
-      dataF.setBuys(i => {
-        let ii = i;
-        ii = +ii - (((+d[index].price + +d[index].taxes + +d[index].ads)) * +d[index].count);
-        window.localStorage.systemDetailsBuys = ii;
-        return ii;
-      })
       d.splice(index,1);
         window.localStorage.productsC = JSON.stringify(d);
         return d
@@ -86,28 +105,30 @@ function TablesData() {
       }
     }
     if(+dataF.products[index].count > 1) {
+      const pro = dataF.products.length > 0? dataF.products : [];
+      dataF.setSells(i => {
+        let ii = i;
+        ii = +ii + ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount);
+        window.localStorage.systemDetailsSells = ii;
+        return ii;
+      })
       dataF.setProducts(prev => {
         let d = [...prev];
-        dataF.setSells(i => {
-          let ii = i;
-          ii = +ii + ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount);
-          window.localStorage.systemDetailsSells = ii;
-          return ii;
-        })
         d[index].count = d[index].count - 1;
         window.localStorage.productsC = JSON.stringify(d);
         return d;
       })
       notify("success sells product","success")
     } else {
+      const pro = dataF.products.length > 0? dataF.products : [];
+      dataF.setSells(i => {
+        let ii = i;
+        ii = +ii + ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount);
+        window.localStorage.systemDetailsSells = ii;
+        return ii;
+      })
       dataF.setProducts(prev => {
         let d = [...prev];
-        dataF.setSells(i => {
-          let ii = i;
-          ii = +ii + ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount);
-          window.localStorage.systemDetailsSells = ii;
-          return ii;
-        })
         d.splice(index,1);
           window.localStorage.productsC = JSON.stringify(d);
           return d
@@ -127,15 +148,15 @@ function TablesData() {
         break; 
       }
     }
-
+    const pro = dataF.products.length > 0? dataF.products : [];
+    dataF.setSells(i => {
+      let ii = i;
+      ii = +ii + (((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount) * +pro[index].count);
+      window.localStorage.systemDetailsSells = ii;
+      return ii;
+    })
     dataF.setProducts(prev => {
-      let d = [...prev];
-      dataF.setSells(i => {
-        let ii = i;
-        ii = +ii + (((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount) * +d[index].count);
-        window.localStorage.systemDetailsSells = ii;
-        return ii;
-      })
+        let d = [...prev];
         d.splice(index,1);
         window.localStorage.productsC = JSON.stringify(d);
         return d
@@ -153,16 +174,18 @@ function TablesData() {
   {
     if(products.length > 0) 
     {
+      const pro = dataF.products.length > 0? dataF.products : [];
+      dataF.setSells(i => {
+        let ii = i;
+        let p = +numberSell * ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount)
+        ii = +ii + +p;
+        window.localStorage.systemDetailsSells = ii;
+        return ii;
+      })
+
       dataF.setProducts(prev => {
         let d = [...prev];
         d[index].count = +d[index].count - +numberSell;
-        dataF.setSells(i => {
-          let ii = i;
-          let p = +numberSell * ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount)
-          ii = +ii + +p;
-          window.localStorage.systemDetailsSells = ii;
-          return ii;
-        })
         window.localStorage.productsC = JSON.stringify(d);
         return d;
       })
@@ -179,7 +202,35 @@ function TablesData() {
     notify("success delete all products","success")
   }
 
-  console.log(products)
+  // -------------------------------------------------------- //
+
+  function typeFunction({type= "",id = "",massage = ""}){
+    setCatchActive({type : type,massage: massage, id: id});
+    ShowModule()
+  }
+
+  function ActiveFunctionsSecurity()
+  {
+    if(catchActive.type === "del-one")
+    {
+      DeleteItem(catchActive.id);
+      CloseModule();
+    } else if(catchActive.type === "del-all")
+    {
+      deleteDataAll();
+      CloseModule();
+    } else if(catchActive.type === "sell-one")
+    {
+      SellOneData(catchActive.id);
+      CloseModule();
+    } else if(catchActive.type === "sell-all")
+    {
+      SellAll(catchActive.id);
+      CloseModule();
+    }
+
+  }
+
   // this print data
   function Items({ currentItems }) {
     return (
@@ -194,10 +245,10 @@ function TablesData() {
               <td>{+item.price + +item.taxes + +item.ads + +item.gain - +item.discount}</td>
               <td>{(+item.price + +item.taxes + +item.ads + +item.gain - +item.discount) * +item.count}</td>
               <td><Link to={`/ChangeProduct/${item.id}`} className='btn btn-success'>{lang.home.table.buttons.change}</Link></td>
-              <td><button className='btn btn-outline-danger' onClick={() => SellOneData(item.id)}>{lang.home.table.buttons.sellOne}</button></td>
+              <td><button className='btn btn-outline-danger' onClick={() => typeFunction({type: "sell-one",id : item.id,massage: `Do you sure about sell one about product called : ${item.name} and has id : ${item.id}. you have ${item.count} packages about this product`})}>{lang.home.table.buttons.sellOne}</button></td>
               <td><button className={`btn btn-outline-danger ${item.count > 2? "" : "disabled"}`} onClick={() => SellNumber(item.id)}>{lang.home.table.buttons.sellNumber}</button></td>
-              <td><button className='btn btn-danger' onClick={() => SellAll(item.id)}>{lang.home.table.buttons.sellAll}</button></td>
-              <td><button className='btn btn-danger' onClick={() => { DeleteItem(item.id)}}>{lang.home.table.rowMain.delete}</button></td>
+              <td><button className='btn btn-danger' onClick={() => typeFunction({type: "sell-all",id: item.id,massage: `Do you sure about sell all the product called : ${item.name} and has id : ${item.id}`})}>{lang.home.table.buttons.sellAll}</button></td>
+              <td><button className='btn btn-danger' onClick={() => {typeFunction({type: "del-one",id: item.id,massage: `Do you sure about delete this product called: ${item.name} and has id: ${item.id}`})}}>{lang.home.table.rowMain.delete}</button></td>
             </tr>
           ))}
       </>
@@ -211,7 +262,7 @@ function TablesData() {
     <div className='p-2 mt-4 container'>
         <div className="d-flex justify-content-between align-items-center p-2 mb-2">
           <h2 className='text-center'>{lang.home.table.title}</h2>
-          <button className={`btn btn-outline-danger ${products.length > 1? "" : "disabled"}`} onClick={deleteDataAll}>Delete All</button>
+          <button className={`btn btn-outline-danger ${products.length > 1? "" : "disabled"}`} onClick={() => typeFunction({type: "del-all",massage: "Do you sure you wand delete all?"})}>Delete All</button>
         </div>
         
          <div className="rtm">
@@ -300,6 +351,22 @@ function TablesData() {
           <button className={`btn btn-primary ${products.length > 0 ? numberSell > +products[getId].count -2 || numberSell < 2 ? "disabled" : "" : "notFount 404!"}`} onClick={() => sellsNowNumberActive(getId)}>Save</button>
         </Modal.Footer>
         </Modal>
+
+
+        <Modal show={ShowMod} onHide={CloseModule}>
+        <Modal.Header closeButton>
+          <Modal.Title>Warning Massage Before Work</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{catchActive.massage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={CloseModule}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={ActiveFunctionsSecurity}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
     </div>
   )

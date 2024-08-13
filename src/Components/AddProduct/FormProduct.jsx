@@ -40,6 +40,8 @@ function FormProduct() {
       }
   }
 
+  console.log(products.moneySystem)
+
    function create () {
       const p = products.products;
       let product = {
@@ -53,26 +55,43 @@ function FormProduct() {
          discount: discount,
          gain: gain
      };
-     p.push(product)
-     products.setProducts([...p])
-     window.localStorage.productsC = JSON.stringify(products.products);
-      //   Add Buy Function here
-      products.setBuys(prev => {
-         let x = prev
-         x = +x + ((+price + +taxes + +ads) * +count);
-         window.localStorage.systemDetailsBuys = x;
-         return x;
-      })
-     setName("");
-     setCategory("");
-     setCount(0);
-     setPrice(0);
-     setTaxes(0);
-     setAds(0);
-     setDiscount(0);
-     setGain(0);
 
-     notify("Success Create Product","success")
+     let priceProduct = ((+price + +taxes + +ads) * +count);
+
+     if(priceProduct > +products.moneySystem){
+        notify("Your money is not enough, Please add money in system money to create the product","error")
+     } else {
+         p.push(product)
+         products.setProducts([...p])
+         window.localStorage.productsC = JSON.stringify(products.products);
+    
+    
+          //   Add Buy Function here
+          products.setBuys(prev => {
+             let x = prev
+             x = +x + priceProduct;
+             window.localStorage.systemDetailsBuys = x;
+             return x;
+          })
+          products.setMoneySystem(prev => {
+            let x = prev
+            x = +x - priceProduct;
+            window.localStorage.moneySystem = x;
+            return x;
+          })
+         setName("");
+         setCategory("");
+         setCount(0);
+         setPrice(0);
+         setTaxes(0);
+         setAds(0);
+         setDiscount(0);
+         setGain(0);
+    
+         notify("Success Create Product","success")
+     }
+
+   
    }
 
   return (
@@ -110,6 +129,9 @@ function FormProduct() {
         <div className='control-form'>
          <label>{lang.createProduct.content.ProductForm.count}</label>
            <input type="number" value={count} onChange={(e) => {setCount(e.target.value)}} placeholder={lang.createProduct.content.ProductForm.count} className='form-control' />
+        </div>
+        <div className='control-form'>
+           <span className={`total ${((+price + +taxes + +ads) * +count) > +products.moneySystem? "bg-danger" : "bg-dark"}`}>{lang.createProduct.content.ProductForm.total}<b>{(+price + +taxes + +ads) * +count}</b>$</span>
         </div>
         <div className='control-form'>
          <label>{lang.createProduct.content.ProductForm.Category}</label>

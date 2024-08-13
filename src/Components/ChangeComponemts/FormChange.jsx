@@ -30,6 +30,7 @@ function FormChange() {
     const lang = Languages();
 
     let buys = product.buys;
+    let money = product.moneySystem;
    const [name, setName] = useState("");
    const [price, setPrice] = useState(0);
    const [taxes, setTaxes] = useState(0);
@@ -57,31 +58,45 @@ function FormChange() {
     }, [index, product.products]);
 
     buys =product.products.length > 0? +buys - ((+product.products[index].price + +product.products[index].taxes + +product.products[index].ads) * +product.products[index].count) : 0
-    console.log(`p: ${product.buys} now: ${buys}`)
+    money =product.products.length > 0? +money + ((+product.products[index].price + +product.products[index].taxes + +product.products[index].ads) * +product.products[index].count) : 0
+
+    console.log("y money: " +money)
      
    function alreadyUpdate() {
-      const s = product.products;
-      s[index].name = name;
-      s[index].category = category;
-      s[index].count = count;
-      s[index].price = price;
-      s[index].taxes = taxes;
-      s[index].ads = ads; 
-      s[index].gain = gain;
-      s[index].discount = discount;
-      buys = +buys + ((+price + +taxes + +ads) * +count)
-      product.setBuys(prev => {
-         let x = prev;
-         x = buys
-         window.localStorage.systemDetailsBuys = x;
-         return x;
-      })
-      product.setProducts([...s]);
-      window.localStorage.productsC = JSON.stringify(product.products);
-      notify("Success Change Product, After Tow Seconds You Will Go To Home Page","success");
-      setTimeout(() => {
-         window.location.pathname = '/';
-      }, 2000);
+      const priceProduct = ((+price + +taxes + +ads) * +count);
+      if(priceProduct > money) {
+         notify("your money is not enough", "error")
+      } else {
+         const s = product.products;
+         s[index].name = name;
+         s[index].category = category;
+         s[index].count = count;
+         s[index].price = price;
+         s[index].taxes = taxes;
+         s[index].ads = ads; 
+         s[index].gain = gain;
+         s[index].discount = discount;
+         buys = +buys + priceProduct
+         money = +money - priceProduct
+         product.setBuys(prev => {
+            let x = prev;
+            x = buys
+            window.localStorage.systemDetailsBuys = x;
+            return x;
+         })
+         product.setMoneySystem(prev => {
+            let x = prev
+            x = money;
+            window.localStorage.moneySystem = x;
+            return x;
+         })
+         product.setProducts([...s]);
+         window.localStorage.productsC = JSON.stringify(product.products);
+         notify("Success Change Product, After Tow Seconds You Will Go To Home Page","success");
+         setTimeout(() => {
+            window.location.pathname = '/';
+         }, 2000);
+      }
       
    }
 
@@ -120,6 +135,9 @@ function FormChange() {
         <div className='control-form'>
          <label>{lang.updateProduct.content.ProductForm.count}</label>
            <input type="number" value={count} onChange={(e) => {setCount(e.target.value)}} placeholder={lang.updateProduct.content.ProductForm.count} className='form-control' />
+        </div>
+        <div className='control-form'>
+           <span className={`total ${((+price + +taxes + +ads) * +count) > money? "bg-danger" : "bg-dark"}`}>{lang.createProduct.content.ProductForm.total}<b>{(+price + +taxes + +ads) * +count}</b>$</span>
         </div>
         <div className='control-form'>
          <label>{lang.updateProduct.content.ProductForm.Category}</label>

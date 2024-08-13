@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import AddSection from '../../Components/Home/AddSection'
 import Cards from '../../Components/Home/Cards'
 
@@ -10,13 +10,16 @@ function HomePage() {
   const lang = Languages();
   const cardsData = Data();
 
-  if(window.localStorage.getItem("systemDetailsBuys") && window.localStorage.systemDetailsBuys !== null) {
+  useEffect(() => {
+    if(window.localStorage.getItem("systemDetailsBuys") && window.localStorage.systemDetailsBuys !== null) {
     cardsData.setBuys(window.localStorage.systemDetailsBuys);
-  }
+    }
 
-  if(window.localStorage.getItem("systemDetailsSells") && window.localStorage.systemDetailsSells !== null) {
-    cardsData.setSells(window.localStorage.systemDetailsSells);
-  }
+    if(window.localStorage.getItem("systemDetailsSells") && window.localStorage.systemDetailsSells !== null) {
+      cardsData.setSells(window.localStorage.systemDetailsSells);
+    }
+  }, [])
+  
 
   return (
     <div>

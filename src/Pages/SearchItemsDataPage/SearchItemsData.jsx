@@ -11,6 +11,9 @@ import "../../ui/SearchMode/search.css";
 
 import { FaAngleDown } from "react-icons/fa6";
 import { MdOutlineDone } from "react-icons/md";
+
+
+
 function SearchItemsData() {
   const dataF = Data();
   const pro = Data();
@@ -27,12 +30,18 @@ function SearchItemsData() {
 
   // model
   const [showMod, setShowMod] = useState(false);
+  const [ShowModTow, setShowModTow] = useState(false)
 
   const handleClose = () => setShowMod(false);
   const handleShow = () => setShowMod(true);
 
+  const ShowModule = () => setShowModTow(true);
+  const CloseModule = () => setShowModTow(false);
+
   const [getId, setGetId] = useState(0)
   const [numberSell, setNumberSell] = useState(2)
+
+  const [catchActive, setCatchActive] = useState({type: "",massage: "",id: ""})
 
   function getIndexItem(id) {
     let index = -1; 
@@ -60,14 +69,22 @@ function SearchItemsData() {
           break; 
         }
       }
+      const pro = dataF.products.length > 0? dataF.products : [];
+      dataF.setMoneySystem(mon => {
+        let money = mon;
+        money = pro.length > 0? +money + (((+pro[index].price + +pro[index].taxes + +pro[index].ads)) * +pro[index].count) : money;
+        window.localStorage.moneySystem = money;
+        return money;
+      })
+  
+      dataF.setBuys(i => {
+        let ii = i;
+        ii = +ii - (((+pro[index].price + +pro[index].taxes + +pro[index].ads)) * +pro[index].count);
+        window.localStorage.systemDetailsBuys = ii;
+        return ii;
+      })
       dataF.setProducts(prev => {
         let d = [...prev];
-        dataF.setBuys(i => {
-          let ii = i;
-          ii = +ii - (((+d[index].price + +d[index].taxes + +d[index].ads)) * +d[index].count);
-          window.localStorage.systemDetailsBuys = ii;
-          return ii;
-        })
         d.splice(index,1);
           window.localStorage.productsC = JSON.stringify(d);
           return d
@@ -85,28 +102,30 @@ function SearchItemsData() {
         }
       }
       if(+dataF.products[index].count > 1) {
+        const pro = dataF.products.length > 0? dataF.products : [];
+        dataF.setSells(i => {
+          let ii = i;
+          ii = +ii + ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount);
+          window.localStorage.systemDetailsSells = ii;
+          return ii;
+        })
         dataF.setProducts(prev => {
           let d = [...prev];
-          dataF.setSells(i => {
-            let ii = i;
-            ii = +ii + ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount);
-            window.localStorage.systemDetailsSells = ii;
-            return ii;
-          })
           d[index].count = d[index].count - 1;
           window.localStorage.productsC = JSON.stringify(d);
           return d;
         })
         notify("success sells product","success")
       } else {
+        const pro = dataF.products.length > 0? dataF.products : [];
+        dataF.setSells(i => {
+          let ii = i;
+          ii = +ii + ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount);
+          window.localStorage.systemDetailsSells = ii;
+          return ii;
+        })
         dataF.setProducts(prev => {
           let d = [...prev];
-          dataF.setSells(i => {
-            let ii = i;
-            ii = +ii + ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount);
-            window.localStorage.systemDetailsSells = ii;
-            return ii;
-          })
           d.splice(index,1);
             window.localStorage.productsC = JSON.stringify(d);
             return d
@@ -128,14 +147,15 @@ function SearchItemsData() {
         }
       }
   
+      const pro = dataF.products.length > 0? dataF.products : [];
+      dataF.setSells(i => {
+        let ii = i;
+        ii = +ii + (((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount) * +pro[index].count);
+        window.localStorage.systemDetailsSells = ii;
+        return ii;
+      })
       dataF.setProducts(prev => {
-        let d = [...prev];
-        dataF.setSells(i => {
-          let ii = i;
-          ii = +ii + (((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount) * +d[index].count);
-          window.localStorage.systemDetailsSells = ii;
-          return ii;
-        })
+          let d = [...prev];
           d.splice(index,1);
           window.localStorage.productsC = JSON.stringify(d);
           return d
@@ -155,16 +175,18 @@ function SearchItemsData() {
     {
       if(products.length > 0) 
       {
+        const pro = dataF.products.length > 0? dataF.products : [];
+        dataF.setSells(i => {
+          let ii = i;
+          let p = +numberSell * ((+pro[index].price + +pro[index].taxes + +pro[index].ads + +pro[index].gain) - +pro[index].discount)
+          ii = +ii + +p;
+          window.localStorage.systemDetailsSells = ii;
+          return ii;
+        })
+  
         dataF.setProducts(prev => {
           let d = [...prev];
           d[index].count = +d[index].count - +numberSell;
-          dataF.setSells(i => {
-            let ii = i;
-            let p = +numberSell * ((+d[index].price + +d[index].taxes + +d[index].ads + +d[index].gain) - +d[index].discount)
-            ii = +ii + +p;
-            window.localStorage.systemDetailsSells = ii;
-            return ii;
-          })
           window.localStorage.productsC = JSON.stringify(d);
           return d;
         })
@@ -173,6 +195,33 @@ function SearchItemsData() {
         notify("success sells product","success")
       }
     }
+
+
+    // active functions cruds
+
+    function typeFunction({type= "",id = "",massage = ""}){
+      setCatchActive({type : type,massage: massage, id: id});
+      ShowModule()
+    }
+  
+    function ActiveFunctionsSecurity()
+    {
+      if(catchActive.type === "del-one")
+      {
+        DeleteItem(catchActive.id);
+        CloseModule();
+      } else if(catchActive.type === "sell-one")
+      {
+        SellOneData(catchActive.id);
+        CloseModule();
+      } else if(catchActive.type === "sell-all")
+      {
+        SellAll(catchActive.id);
+        CloseModule();
+      }
+  
+    }
+
 
     // ------------------------------------
 
@@ -250,9 +299,9 @@ function SearchItemsData() {
                     </section>
                     <footer>
                       <Link to={`/ChangeProduct/${item.id}`} className='button'>Edit</Link>
-                      <button onClick={() => DeleteItem(item.id)}>Delete</button>
-                      <button onClick={() => SellOneData(item.id)}>Sell One</button>
-                      <button onClick={() => SellAll(item.id)}>Sell All</button>
+                      <button onClick={() => typeFunction({type: "del-one",id: item.id,massage: `Do you sure about delete this product called: ${item.name} and has id: ${item.id}`})}>Delete</button>
+                      <button onClick={() => typeFunction({type: "sell-one",id : item.id,massage: `Do you sure about sell one about product called : ${item.name} and has id : ${item.id}. you have ${item.count} packages about this product`})}>Sell One</button>
+                      <button onClick={() => typeFunction({type: "sell-all",id: item.id,massage: `Do you sure about sell all the product called : ${item.name} and has id : ${item.id}`})}>Sell All</button>
                       <button onClick={() => SellNumber(item.id)}>Sell Number</button>
                     </footer>
                   </div>
@@ -281,9 +330,9 @@ function SearchItemsData() {
                     </section>
                     <footer>
                       <Link to={`/ChangeProduct/${item.id}`} className='button'>Edit</Link>
-                      <button onClick={() => DeleteItem(item.id)}>Delete</button>
-                      <button onClick={() => SellOneData(item.id)}>Sell One</button>
-                      <button onClick={() => SellAll(item.id)}>Sell All</button>
+                      <button onClick={() => typeFunction({type: "del-one",id: item.id,massage: `Do you sure about delete this product called: ${item.name} and has id: ${item.id}`})}>Delete</button>
+                      <button onClick={() => typeFunction({type: "sell-one",id : item.id,massage: `Do you sure about sell one about product called : ${item.name} and has id : ${item.id}. you have ${item.count} packages about this product`})}>Sell One</button>
+                      <button onClick={() => typeFunction({type: "sell-all",id: item.id,massage: `Do you sure about sell all the product called : ${item.name} and has id : ${item.id}`})}>Sell All</button>
                       <button onClick={() => SellNumber(item.id)}>Sell Number</button>
                     </footer>
                   </div>
@@ -297,8 +346,34 @@ function SearchItemsData() {
 
 
 
-
- 
+  if(products.length <= 0) {
+    return(
+      <div className='CONTAINER-SEARCH-MODE'>
+      <header>
+        <div className="container-search">
+          <input type="search" placeholder="Search" value={keyWords} onChange={(e) => setKeyWords(e.target.value)}/>
+          
+          <div className="subTitle" onClick={() => show? handleCloseList() : handleShowList()}><span className={`resChose ${nOrC === "N"? "" : "bg-secondary"}`}>{nOrC}</span> <span className='iconDown'><FaAngleDown /></span></div>
+          
+        </div>
+        <div className={`list ${show? "show" : ""}`}>
+                <p className="item" onClick={() => setNOrC("N")}>
+                  <span>Name</span>
+                  <span className="isChose">{nOrC === "N"? <MdOutlineDone /> : null}</span>
+                </p>
+                <p className="item" onClick={() => setNOrC("C")}>
+                  <span>Category</span>
+                  <span className="isChose">{nOrC === "C"? <MdOutlineDone /> : null}</span>
+                </p>
+              </div>
+      </header>
+      <div className="container-result-data">
+        <div className='alert alert-info text-center w-100'>not found Products</div>
+      </div>
+    </div>
+    )
+  }
+      
 
   return (
     <div className='CONTAINER-SEARCH-MODE'>
@@ -365,6 +440,21 @@ function SearchItemsData() {
         </Modal.Footer>
         </Modal>
 
+
+        <Modal show={ShowModTow} onHide={CloseModule}>
+        <Modal.Header closeButton>
+          <Modal.Title>Warning Massage Before Work</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{catchActive.massage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={CloseModule}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={ActiveFunctionsSecurity}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
     </div>
   )

@@ -1,7 +1,8 @@
 .containerAddProduct{
     padding: 10px;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
     background-color: #f7f7f7;
+    gap: 20px;
 }

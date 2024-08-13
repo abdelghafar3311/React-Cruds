@@ -86,42 +86,6 @@ function Tables() {
         setLimit(1);
     }
 
-
-    // function check(item) {
-    //     if(
-    //         item.name === "" || item.name === undefined || item.name === null &&
-    //         item.category === "" || item.category === undefined || item.category === null
-    //     ){
-    //         setError(true);
-    //         setMError("Has problem in name or category inputs");
-    //         if (
-    //             item.price === "" || +item.price <= 0 || item.price === undefined || item.price === null &&
-    //             item.taxes === undefined || item.taxes === null &&
-    //             item.ads === undefined || item.ads === null
-                
-    //         ) {
-    //             setError(true);
-    //             setMError("Has problem in price or taxes or ads inputs");
-    //             if(
-    //                 item.gain === "" || +item.gain <= 0 || item.gain === undefined || item.gain === null &&
-    //                 item.discount === "" || +item.discount > (+item.price + +item.taxes + +item.ads + +item.gain)
-    //             ){
-    //                 setError(true);
-    //                 setMError("Has problem in gain or discount inputs");
-    //                 if (
-    //                     +item.count < 0 || item.count === ""
-    //                 ) {
-    //                     setError(true);
-    //                     setMError("Has problem in count input");
-    //                 }
-    //             }
-    //         }
-    //     } else {
-    //         setError(false);
-    //         setMError("");
-    //     }
-    // }
-
     function check(item) {
         if (
             item.name === "" || item.name === undefined || item.name === null ||
@@ -170,30 +134,46 @@ function Tables() {
         if(error === true) {
             return null;
         } else  {
-            const db = localData;
 
-            modules.setProducts(prev => {
-                const g = [...prev, ...db];
-                console.log("db state:");
-                console.log(g);
-                window.localStorage.productsC = JSON.stringify(g);
-                return g;
-            });
             const totalBuys = localData.reduce((acc, item) => {
-              const price = item.price ? +item.price : 0;
-              const taxes = item.taxes ? +item.taxes : 0;
-              const ads = item.ads ? +item.ads : 0;
-              const count = item.count ? +item.count : 1;
-              return acc + ((price + taxes + ads) * count);
-            }, 0);
-            modules.setBuys(prev => {
-                let x = prev;
-                x = +x + totalBuys
-                window.localStorage.systemDetailsBuys = x;
-                return x;
-            })
-            setLocalData([]);
-            notify("Success Create Products","success");
+                const price = item.price ? +item.price : 0;
+                const taxes = item.taxes ? +item.taxes : 0;
+                const ads = item.ads ? +item.ads : 0;
+                const count = item.count ? +item.count : 1;
+                return acc + ((price + taxes + ads) * count);
+              }, 0);
+
+              if(totalBuys > +modules.moneySystem)
+              {
+                notify("Your money is not enough,please go to system of money and add money or translate to create the products", "error");
+              } else {
+                const db = localData;
+
+                modules.setProducts(prev => {
+                    const g = [...prev, ...db];
+                    console.log("db state:");
+                    console.log(g);
+                    window.localStorage.productsC = JSON.stringify(g);
+                    return g;
+                });
+                
+                modules.setBuys(prev => {
+                    let x = prev;
+                    x = +x + totalBuys
+                    window.localStorage.systemDetailsBuys = x;
+                    return x;
+                })
+                modules.setMoneySystem(prev => {
+                    let x = prev
+                    x = +x - totalBuys;
+                    window.localStorage.moneySystem = x;
+                    return x;
+                  })
+                setLocalData([]);
+                notify("Success Create Products","success");
+              }
+
+            
             
         }
     }

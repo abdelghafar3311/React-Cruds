@@ -3,7 +3,7 @@ import { Route,Routes,BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // import ui design
-import NavBar from './ui/navbar/NavBar';
+import NavBar from './Utils/NavBar';
 import { ToastContainer,Zoom } from 'react-toastify';
 // import Pages
 import HomePage from './Pages/HomePages/Home';
