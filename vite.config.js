@@ -7,9 +7,5 @@ export default defineConfig({
   server: {
     host: "127.1.0.0",
     port: 8000
-  },
-  preview: {
-    host: "127.5.5.5",
-    port: 8080
   }
 })
