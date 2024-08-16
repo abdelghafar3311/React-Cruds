@@ -28,11 +28,11 @@ function AddSection({className}) {
   // here clear data from sells and buys
   function clear() 
   {
-    db.setSells(0);
-    window.localStorage.systemDetailsSells = db.sells;
+   db.setSells(0);
+    window.localStorage.removeItem("systemDetailsSells");
 
     db.setBuys(0);
-    window.localStorage.systemDetailsBuys = db.buys;
+    window.localStorage.removeItem("systemDetailsBuys");
 
     notify("Success Clear Data", "success");
     handleClose();
