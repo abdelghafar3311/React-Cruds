@@ -6,6 +6,6 @@
 this code download all things about the project like library used it .. etc
 ### third
 here you can open project and you have to options is:
-[1] if you write `npm run dev` is open in develop mode
-[2] if write `npm run preview` is open.
+1. if you write `npm run dev` is open in develop mode
+2. if write `npm run preview` is open.
 
