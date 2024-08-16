@@ -1,39 +1,52 @@
 import React, {useState,useEffect} from 'react'
-import Table from 'react-bootstrap/Table';
-import { MdOutlineDeleteOutline } from "react-icons/md";
+// css style component
 import "../../ui/Tables.AddProducts/tables.css"
-import { IoIosAdd } from "react-icons/io";
-import { Data } from '../../Data/Context/context.jsx';
-// languages function
-import Languages from "../../Data/languages/langFunction.js";
-import notify from '../../hook/useNotifaction.js';
-import { v4 as uuidv4 } from 'uuid';
-import Alert from 'react-bootstrap/Alert';
 
-function Tables() {
- 
+// bootstrap
+import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
+// icons
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { IoIosAdd } from "react-icons/io";
+
+// Fun Data Folder
+import { Data } from '../../Data/Context/context.jsx';
+import Languages from "../../Data/languages/langFunction.js";
+import { lang as lg } from '../../Data/languages/langFunction.js';
+
+// hook
+import notify from '../../hook/useNotifaction.js';
+
+// library
+import { v4 as uuidv4 } from 'uuid';
+
+
+function Tables({className}) {
+    
+    // values !import
     const modules = Data();
     const lang = Languages();
 
+    // useState Values
+    const [limit, setLimit] = useState(1) // limit data create
+    const [localData, setLocalData] = useState([]) // local data
+    const [error, setError] = useState(false); // error status
+    const [mError, setMError] = useState("") // error message
+    // ---------------------------------------------------------------------- //
 
-    const [limit, setLimit] = useState(1)
-    const [localData, setLocalData] = useState([])
-    const [error, setError] = useState(false);
-    const [mError, setMError] = useState("")
-    // create data
-
+    // Random function
     function randomId() {
-        let id = uuidv4(); // Generate a new UUID
+        let id = uuidv4(); // Generate a new Id
         let state = false;
         const proLoop = modules.products;
-    
+        // this loop to check if id has like it in products
         for (let i = 0; i < proLoop.length; i++) {
             if (+id === proLoop[i].id) {
                 state = true;
                 break;
             }
         }
-    
+        // this status about id if like it in products or no 
         if (state) {
             console.log("the id is change...");
             return randomId();
@@ -42,10 +55,11 @@ function Tables() {
         }
     }
   
-
+    // Create Data in local data (not upload server)
     function createData() {
         const a = [];
         let d = {};
+        // here loop in limit to create data
         for(let i = 0;i < limit; i++) {
             let r = randomId();
             d = {
@@ -61,10 +75,11 @@ function Tables() {
             }
             a.push(d);
         }
+        // here put data in local data
         setLocalData([...localData,...a])
     }
 
-
+    // this fun to catch changing in inputs create (This work like update data)
     function handleChange(index,flied, value) {
         setLocalData(prev => {
             const d = [...prev];
@@ -72,7 +87,7 @@ function Tables() {
             return d
         })
     }
-
+    // this allow you delete data which in local data
     function deleteOneItem(index) {
         setLocalData(prev => {
             const d = [...prev];
@@ -80,12 +95,12 @@ function Tables() {
             return d
         })
     }
-
+    // this to create more data
     function createDataMore() {
         createData();
         setLimit(1);
     }
-
+    // this security function to check if data is filled or no
     function check(item) {
         if (
             item.name === "" || item.name === undefined || item.name === null ||
@@ -125,7 +140,7 @@ function Tables() {
         })
     }, [localData])
 
-
+    // upload data from local to server and this finally step
      function Post() {
          for(let i = 0;i < localData.length;i++) {
             check(localData[i]);
@@ -143,6 +158,7 @@ function Tables() {
                 return acc + ((price + taxes + ads) * count);
               }, 0);
 
+            //   security money if not enough
               if(totalBuys > +modules.moneySystem)
               {
                 notify("Your money is not enough,please go to system of money and add money or translate to create the products", "error");
@@ -177,64 +193,73 @@ function Tables() {
             
         }
     }
+
    
   return (
     <div className='alert alert-light mt-5'>
+        {/* alert if found error */}
         <Alert show={localData.length > 0? error : false } variant="danger">
-        <p>
-          {mError}
-        </p>
-      </Alert>
+            <p>
+            {mError}
+            </p>
+        </Alert>
+
         <div className="headerTables">
             <h2>{lang.createProducts.content.title}</h2>
+
             <div className="AddForm">
-                <input type="number" value={limit} onChange={(e) => {setLimit(+e.target.value)}} placeholder={lang.createProducts.content.placeholderLimit}/>
-                <button onClick={createDataMore}><IoIosAdd /></button>
+                <input className={className[0]}  type="number" value={limit} onChange={(e) => {setLimit(+e.target.value)}} placeholder={lang.createProducts.content.placeholderLimit}/>
+                <button className={className[1]} onClick={createDataMore}><IoIosAdd /></button>
             </div>
+
         </div>
+
         <div className="TableCR">
-        <Table striped bordered hover>
-            <thead>
-                <tr>
-                <th>#</th>
-                <th>{lang.createProducts.content.ProductsTable.row.name}</th>
-                <th>{lang.createProducts.content.ProductsTable.row.Category}</th>
-                <th className='text-center'>
-                   {lang.createProducts.content.ProductsTable.row.price}
-                </th>
-                <th>{lang.createProducts.content.ProductsTable.row.count}</th>
-                <th>{lang.createProducts.content.ProductsTable.row.delete}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    localData.length > 0? (localData.map((item,i) => {
-                        return(
-                            <tr>
-                                <td>{i + 1}</td>
-                                <td><input type="text" value={item.name} onChange={(e) => handleChange(i,"name",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.name}/></td>
-                                <td><input type="text" value={item.category} onChange={(e) => handleChange(i,"category",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.Category}/></td>
-                                <th className='thContainer'>
-                                    <td><input type="number" value={item.price} onChange={(e => handleChange(i,"price",e.target.value))} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.price}/></td>
-                                    <td><input type="number" value={item.taxes} onChange={(e) => handleChange(i,"taxes",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.taxes}/></td>
-                                    <td><input type="number" value={item.ads} onChange={(e) => handleChange(i,"ads",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.ads}/></td>
-                                    <td><input type="number" value={item.gain} onChange={(e) => handleChange(i,"gain",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.gain}/></td>
-                                    <td><input type="number" value={item.discount} onChange={(e) => handleChange(i,"discount",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.discount} className={`${+item.discount > +item.gain || +item.discount === +item.gain? "border-danger text-danger" : ""}`} /></td>
-                                    <td><span className='total'>{lang.createProducts.content.ProductsTable.placeholderFormsRows.total}(<b>{+item.price + +item.taxes + +item.ads + +item.gain - +item.discount}</b>$)</span></td>
-                                </th>
-                                <td><input type="number" value={item.count} onChange={(e) => handleChange(i,"count",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.count} /></td>
-                                <td><button className='btn btn-danger' onClick={() => deleteOneItem(i)}><MdOutlineDeleteOutline /></button></td>
-                            </tr>
-                        )
-                    })) : <tr><td colSpan={6}><p className='alert alert-warning text-center'>The limit is zero</p></td></tr>
-                }
-            </tbody>
-        </Table>
+            <Table striped bordered hover style={{direction: lg === "ar"? "rtl" : "ltr"}}>
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>{lang.createProducts.content.ProductsTable.row.name}</th>
+                    <th>{lang.createProducts.content.ProductsTable.row.Category}</th>
+                    <th className='text-center'>
+                    {lang.createProducts.content.ProductsTable.row.price}
+                    </th>
+                    <th>{lang.createProducts.content.ProductsTable.row.count}</th>
+                    <th>{lang.createProducts.content.ProductsTable.row.delete}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        localData.length > 0? (localData.map((item,i) => {
+                            return(
+                                <tr>
+                                    <td>{i + 1}</td>
+                                    <td><input type="text" value={item.name} onChange={(e) => handleChange(i,"name",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.name}/></td>
+                                    <td><input type="text" value={item.category} onChange={(e) => handleChange(i,"category",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.Category}/></td>
+                                    <th className='thContainer'>
+                                        <td><input type="number" value={item.price} onChange={(e => handleChange(i,"price",e.target.value))} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.price}/></td>
+                                        <td><input type="number" value={item.taxes} onChange={(e) => handleChange(i,"taxes",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.taxes}/></td>
+                                        <td><input type="number" value={item.ads} onChange={(e) => handleChange(i,"ads",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.ads}/></td>
+                                        <td><input type="number" value={item.gain} onChange={(e) => handleChange(i,"gain",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.gain}/></td>
+                                        <td><input type="number" value={item.discount} onChange={(e) => handleChange(i,"discount",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.discount} className={`${+item.discount > +item.gain || +item.discount === +item.gain? "border-danger text-danger" : ""}`} /></td>
+                                        <td><span className='total'>{lang.createProducts.content.ProductsTable.placeholderFormsRows.total}(<b>{+item.price + +item.taxes + +item.ads + +item.gain - +item.discount}</b>$)</span></td>
+                                    </th>
+                                    <td><input type="number" value={item.count} onChange={(e) => handleChange(i,"count",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.count} /></td>
+                                    <td><button className='btn btn-danger' onClick={() => deleteOneItem(i)}><MdOutlineDeleteOutline /></button></td>
+                                </tr>
+                            )
+                        })) : <tr><td colSpan={6}><p className='alert alert-warning text-center'>The limit is zero</p></td></tr>
+                    }
+                </tbody>
+            </Table>
         </div>
-        <button className='btn btn-outline-primary w-100' onClick={createData}>{lang.createProducts.content.ProductsTable.btnForm.btnAdd}</button>
+
+        <button className={`btn btn-outline-primary w-100 ${className[2]}`} onClick={createData}>{lang.createProducts.content.ProductsTable.btnForm.btnAdd}</button>
+        
         <div className="btnServerUpload">
-            <button className={`btn btn-success rounded-5 ${error? "disabled" : ""} ${localData.length <= 0? "disabled" : ""}`} onClick={Post}>{lang.createProducts.content.ProductsTable.btnForm.btnUpload}</button>
+            <button className={`btn btn-success rounded-5 ${error? "disabled" : ""} ${localData.length <= 0? "disabled" : ""} ${className[3]}`} onClick={Post}>{lang.createProducts.content.ProductsTable.btnForm.btnUpload}</button>
         </div>
+    
     </div>
   )
 }

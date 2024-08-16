@@ -1,15 +1,16 @@
 export const en = {
     home: {
         headerHomePage: {
-            placeholderSearch: "Search about Products",
+            searchPage: "Search Page",
             createProducts: "Create Products",
-            createProduct: "Create Product"
+            createProduct: "Create Product",
+            clearData: "Clear Data"
         },
         cards: {
             NumberOfProducts: "Products Number",
             Buys: "Buys",
             Sells: "Sells",
-            Total: "Total"
+            Money: "Your Money"
         },
         table: {
             title: "Products",
@@ -29,7 +30,8 @@ export const en = {
                 change: "Change",
                 sellOne: "Sell One",
                 sellNumber: "Sell Number",
-                sellAll: "Sell All"
+                sellAll: "Sell All",
+                delAll: "Delete All"
             }
             // tab sell Number here!
         },
@@ -118,22 +120,77 @@ export const en = {
     uploadModule: {
         title: "Upload Data",
         btn: "Stop Upload"
-    }
+    },
+    MoneySys: {
+        activities: {
+            change: "Active Change Money",
+            add: "Active Add Money",
+            trans: "Active Translate"
+        },
+        inputs: {
+            money: "Your Money",
+            addMoney: "Add Money",
+            sells: "sells",
+            transMoney: "Money Translate"
+        },
+        titles: {
+            main: "Money System",
+            transTitle: "Translate Money from Sells to Money System"
+        },
+        buttons: {
+            close: "Close",
+            Save: "Save Change"
+        }
+    },
+    searchPage: {
+        inputs: {
+            placeholder: "Search",
+            Name: "Name",
+            Category: "Category"
+        },
+        warning: "not found Products",
+        contentBox: {
+            category: "Category is",
+            Count: "Count product is",
+            Price: "price"
+        },
+        buttons: {
+            edit: "Edit",
+            delete: "Delete",
+            sellAll: "Sell All",
+            sellOne: "Sell One",
+            sellNumber: "Sell Number"
+        }
+    },
+    ModuleNumber: {
+        title: "Sells Number of Product",
+        name: "Name Product",
+        category: "Category",
+        count: "Count",
+        id: "Id",
+        price: "Price",
+        ps: "Price (Sells)",
+        label: "number of product you want sell them:",
+        cancel: "Cancel",
+        work: "Save"
+    },
+    
 }
 
 
 export const ar = {
     home: {
         headerHomePage: {
-            placeholderSearch: "بحث عن المنتجات",
+            searchPage: "صفحة البحث",
             createProducts: "إنشاء منتجات",
-            createProduct: "إنشاء منتج"
+            createProduct: "إنشاء منتج",
+            clearData: "حذف البيانات"
         },
         cards: {
             NumberOfProducts: "عدد المنتجات",
             Buys: "الشرائات",
             Sells: "المبيعات",
-            Total: "المجموع"
+            Money: "أموالك"
         },
         table: {
             title: "المنتجات",
@@ -153,7 +210,8 @@ export const ar = {
                 change: "تعديل",
                 sellOne: "بيع واحدة",
                 sellNumber: "عدد محدد من البيع",
-                sellAll: "بيع الكل"
+                sellAll: "بيع الكل",
+                delAll: "حذف الكل"
             }
             // tab sell Number here!
         },
@@ -242,5 +300,58 @@ export const ar = {
     uploadModule: {
         title: "رفع البيانات",
         btn: "أوقف الرفع"
+    },
+    MoneySys: {
+        activities: {
+            change: "السماح لتعديل المال",
+            add: "تفعيل أضافة أموال",
+            trans: "تفعيل تحويل الاموال من و إلى"
+        },
+        inputs: {
+            money: "أموالك",
+            addMoney: "أضف المال",
+            sells: "المبيعات",
+            transMoney: "المال المحول"
+        },
+        titles: {
+            main: "نظام الاموال",
+            transTitle: "حول ماك من المبيعات إلى حسابك الخاص"
+        },
+        buttons: {
+            close: "أغلاق",
+            Save: "حفظ التغيرات"
+        }
+    },
+    searchPage: {
+        inputs: {
+            placeholder: "بحث",
+            Name: "ألاسم",
+            Category: "الفئة"
+        },
+        warning: "لا توجد منتجات",
+        contentBox: {
+            category: "فئته هي",
+            Count: "كميته تكون",
+             Price: "السعر"
+        },
+        buttons: {
+            edit: "تعديل",
+            delete: "حذف",
+            sellAll: "بيع الكل",
+            sellOne: "بيع",
+            sellNumber: "بيع بكمية"
+        }
+    },
+    ModuleNumber: {
+        title: "بيع كمية من المنتج",
+        name: "أسم المنتج",
+        category: "فئته",
+        count: "عدده",
+        id: "رقم التعريف الخاص به",
+        price: "سعره",
+        ps: "سعر الكمية التى ستبيعها",
+        label: "كمية المنتج التى تريد بيعها:",
+        cancel: "أغلاق",
+        work: "حفظ"
     }
 }

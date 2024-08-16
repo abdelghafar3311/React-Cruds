@@ -1,14 +1,16 @@
+import React,{useState,useEffect} from 'react';
+// css file
 import "../ui/navbar/nav.model.css"
-
-import React,{useState,useEffect} from 'react'
+// library
 import { Link } from "react-router-dom";
+import Joyride from "react-joyride";
 // icon import
 import { IoLanguageSharp,IoHome } from "react-icons/io5";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BsCheckCircleFill } from "react-icons/bs";
-// import { Link } from "react-router-dom";
 
+// bootstrap
 import Nav from 'react-bootstrap/Nav';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
@@ -18,38 +20,41 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 // functions
-import { setLang } from "../Data/languages/langFunction";
+import { setLang, lang as lg } from "../Data/languages/langFunction";
 import { Data } from "../Data/Context/context";
+import Languages from "../Data/languages/langFunction";
+// data steps
+import navSteps from "../Data/OfferSite/Nav";
 
 
 
 function NavBar() {
-
+  // main values
   const money = Data();
-
+  const lang = Languages();
   if(window.localStorage.getItem("moneySystem") && window.localStorage.moneySystem !== null) {
     money.setMoneySystem(window.localStorage.moneySystem);
   }
-
+  // security value
   const [security, setSecurity] = useState({
     change: false,
     add: false,
     translate: false
   })
+  // modal
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-
-  // const mmm = money.moneySystem
-
+  // useState Joyride
+  const [runTour, setRunTour] = useState(false);
+  // useState values
   const [addMoney, setAddMoney] = useState(0)
   const [translate, setTranslate] = useState(0)
   const [error, setError] = useState({state: false,massage: []})
   const [editMoney, setEditMoney] = useState(0)
 
-
+  // show modal to say warning before active function
   function ShowModF()
   {
     setError({state: false,massage: []});
@@ -58,9 +63,28 @@ function NavBar() {
 
 
   useEffect(() => {
-    setEditMoney(+money.moneySystem)
+    setEditMoney(+money.moneySystem);
+    // Check if the tour has been completed
+    const isTourCompleted = localStorage.getItem('NavTour');
+    if (!isTourCompleted) {
+      setRunTour(true);
+    }
   }, [money.moneySystem])
 
+
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    const finishedStatuses = ['finished', 'skipped'];
+
+    if (finishedStatuses.includes(status)) {
+      // Mark the tour as completed
+      localStorage.setItem('NavTour', true);
+      setRunTour(false);
+    }
+  };
+
+  // fun add money
   function PlusMoney () 
   {
     money.setMoneySystem(prev => {
@@ -70,7 +94,7 @@ function NavBar() {
       return num;
     })
   }
-
+  // fun translate money
   function TransSToMoney()
   {
     if(+money.sells < +translate) return null;
@@ -88,7 +112,7 @@ function NavBar() {
           return p;
         })
   }
-  
+  // fun edit money
   function ChangeMoney() 
   {
     money.setMoneySystem(prev => {
@@ -99,7 +123,7 @@ function NavBar() {
     })
   } 
  
-
+  // fun control all functions three (add/edit/translate)
   function AllActivity()
   {
 
@@ -142,11 +166,14 @@ function NavBar() {
 
   return (
     <div className="NavBar">
+        <Joyride steps={navSteps} callback={handleJoyrideCallback} run={runTour} continuous showProgress showSkipButton/>
+
         <div className="MainNav">
             <h3>React CRUDS</h3>
         </div>
+
         <div className="Additional">
-            <Nav  variant="dark" bg="dark">
+            <Nav  variant="dark" bg="dark" className="language-step">
                 <Dropdown data-bs-theme="dark">
                   <Dropdown.Toggle id="dropdown-basic" variant="dark" className="dropdownMenu">
                     <IoLanguageSharp />
@@ -158,41 +185,48 @@ function NavBar() {
                 
                 </Dropdown>
             </Nav>
-            <span className="Link-Additional btn btn-dark" onClick={ShowModF}><FaMoneyCheckDollar /></span>
+
+            <span className="Link-Additional btn btn-dark money-system-step" onClick={ShowModF}><FaMoneyCheckDollar /></span>
+            
             <Link to='/' className="Link-Additional btn btn-dark"><IoHome /></Link>
+        
         </div>
 
-
-        <Modal show={show} onHide={handleClose} fullscreen={true}>
-        <Modal.Header closeButton>
-          <Modal.Title className="d-flex justify-content-center align-items-center gap-2"><FaMoneyCheckDollar /> Money System</Modal.Title>
+        {/* money system */}
+        <Modal show={show} onHide={handleClose} fullscreen={true} style={{direction: lg === "ar"? "rtl" : "ltr"}}>
+        <Modal.Header>
+          <Modal.Title className="d-flex justify-content-center align-items-center gap-2"><FaMoneyCheckDollar />{lang.MoneySys.titles.main}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
           
           <div className="d-flex justify-content-end align-items-center">
+            {/* start change */}
           <Form.Check 
                 type="switch"
                 id="custom-switch-Change"
-                label="Active Change Money"
+                label={lang.MoneySys.activities.change}
                 // disabled={true}
                 checked={security.change}
                 onClick={() => security.change ? setSecurity({...security, change: false}) : setSecurity({...security, change: true})}
                 className="bg-light p-2 ps-5 mb-2"
               />
-            {/* <Button variant="outline-success" className="d-flex justify-content-center align-items-center gap-1" onClick={() => editMoneyState ? setEditMoneyState(false) : setEditMoneyState(true)}><FaEdit /> {editMoneyState ? "Close Edit" : "Edit Money"}</Button> */}
           </div>
+
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Your Money</Form.Label>
+              <Form.Label>{lang.MoneySys.inputs.money}</Form.Label>
               <Form.Control
                 type={!security.change? "text" : "number"}
-                placeholder="Your Money"
+                placeholder={lang.MoneySys.inputs.money}
                 readOnly={security.change? false : true}
                 value={!security.change? "$" + money.moneySystem : editMoney}
                 className={!security.change ?"bg-light text-success text-center fw-bolder" : ""}
                 onChange={e => setEditMoney(e.target.value)}
               />
             </Form.Group>
+
+            {/* start add */}
+
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
@@ -201,7 +235,7 @@ function NavBar() {
                  <Form.Check 
                   type="switch"
                   id="custom-switch"
-                  label="Active Add Money"
+                  label={lang.MoneySys.activities.add}
                   // disabled={true}
                   checked={security.add}
                   className="bg-light p-2 ps-5 mb-2"
@@ -209,39 +243,44 @@ function NavBar() {
                 />
               </div>
              
-              <Form.Label>Add Money</Form.Label>
+              <Form.Label>{lang.MoneySys.inputs.addMoney}</Form.Label>
               <Form.Control
                  type="number"
-                 placeholder="Add Money"
+                 placeholder={lang.MoneySys.inputs.addMoney}
                  value={addMoney}
                  onChange={(e) => setAddMoney(e.target.value)}
                  readOnly={security.add? false : true}
                  className={security.add? "" : "bg-light"}
               />
             </Form.Group>
+
+            {/* start translate */}
+
             <div className="d-flex justify-content-end align-items-center">
               <Form.Check 
                 type="switch"
                 id="custom-switch-translate Sells to Money"
-                label="Active Translate"
+                label={lang.MoneySys.activities.trans}
                 className="bg-light p-2 ps-5 mb-2"
                 checked={security.translate}
                 onClick={() => security.translate ? setSecurity({...security, translate: false}) : setSecurity({...security, translate: true})}
               />
             </div>
             
-            <h3 className="text-center p-2 bg-light fw-lighter">Translate Money from Sells to Money System</h3>
+            <h3 className="text-center p-2 bg-light fw-lighter">{lang.MoneySys.titles.transTitle}</h3>
+           
            <Row className="g-2">
-           <Col md>
-            <FloatingLabel controlId="floatingInputGrid" label="Sells">
-              <Form.Control type="number" placeholder="" value={money.sells - translate} readOnly />
-            </FloatingLabel>
-          </Col>
-          <Col md>
-            <FloatingLabel label="Money Translate">
-              <Form.Control className={`${security.translate ? +money.sells < +translate? "border-danger text-danger" : "" : "bg-light"}`} readOnly={security.translate ? false : true} type="number" placeholder="Money Translate" value={translate} onChange={(e) => setTranslate(e.target.value)} />
-            </FloatingLabel>
-          </Col>
+            <Col md>
+              <FloatingLabel controlId="floatingInputGrid" label={lang.MoneySys.inputs.sells}>
+                <Form.Control type="number"className="bg-light" placeholder="" value={money.sells - translate} readOnly />
+              </FloatingLabel>
+            </Col>
+
+            <Col md>
+                <FloatingLabel label={lang.MoneySys.inputs.transMoney}>
+                  <Form.Control className={`${security.translate ? +money.sells < +translate? "border-danger text-danger" : "" : "bg-light"}`} readOnly={security.translate ? false : true} type="number" placeholder="Money Translate" value={translate} onChange={(e) => setTranslate(e.target.value)} />
+                </FloatingLabel>
+            </Col>
            </Row>
           </Form>
 
@@ -252,13 +291,14 @@ function NavBar() {
                 )
               }) : ""}
           </div>
+          
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            {lang.MoneySys.buttons.close}
           </Button>
           <Button variant="primary" onClick={AllActivity}>
-            Save Changes
+          {lang.MoneySys.buttons.Save}
           </Button>
         </Modal.Footer>
       </Modal>

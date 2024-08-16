@@ -1,11 +1,12 @@
 import React from 'react'
 
 // css file
-import "../../ui/headerAddProduct/header.css"
+import "../../ui/headerAddProduct/header.css";
+
+// library
 import { Link } from 'react-router-dom'
-
+// data folder functions
 import Languages from '../../Data/languages/langFunction'
-
 import { Data } from '../../Data/Context/context.jsx';
 
 function HeaderSection() {

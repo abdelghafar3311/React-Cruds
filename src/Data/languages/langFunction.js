@@ -1,14 +1,11 @@
-// import { useEffect } from "react";
-
 import { en,ar } from "./languages";
-
-export let lang = "ar"
+// get type languages
+export let lang = "en"
 if(localStorage.getItem("languages") && localStorage.languages !== null) {
     lang = localStorage.languages
 }
 
-
-
+// access data
 export default function Languages() {
     if(lang === "en") {
         return en;
@@ -20,9 +17,9 @@ export default function Languages() {
 
 }
 
-
-export function setLang(l) {
-    lang = l;
+// change languages
+export function setLang(languagesNew) {
+    lang = languagesNew;
     localStorage.languages = lang;
     Languages();
 }

@@ -2,30 +2,25 @@ import { createContext,useContext,useState,useEffect } from "react";
 
 
 
-
+// create context
 export const ContextVal = createContext({});
-
+// context component
 export function ContextShare({children}) {
-    const [showModule, setShowModule] = useState(false);
+    // values -useState
     const [products, setProducts] = useState([]);
     const [sells, setSells] = useState(0);
     const [buys, setBuys] = useState(0);
-    const [moneySystem, setMoneySystem] = useState(0)
-    // if(localStorage.getItem('productsC') && localStorage.productsC !== null) {
-    //     setProducts([...JSON.parse(localStorage.productsC)])
-    // }
+    const [moneySystem, setMoneySystem] = useState(0);
 
     useEffect(() => {
         if(window.localStorage.getItem("productsC") && window.localStorage.productsC !== null) {
             setProducts([...JSON.parse(window.localStorage.productsC)])
         }
     },[])
-
+    // default value
     const defaultValue = {
         products: products,
         setProducts: setProducts,
-        showModule : showModule,
-        setShowModule : setShowModule,
         buys: buys,
         setBuys: setBuys,
         sells: sells,
@@ -39,5 +34,5 @@ export function ContextShare({children}) {
         </ContextVal.Provider>
     )
 }
-
+// use context
 export const Data = () => useContext(ContextVal)
