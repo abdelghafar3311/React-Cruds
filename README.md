@@ -5,7 +5,7 @@
 ### Second: `npm install`
 this code download all things about the project like library used it .. etc
 ### third `npm run build`
-### third
+### Fourth
 here you can open project and you have to options is:
 1. if you write `npm run dev` is open in develop mode
 2. if write `npm run preview` is open. this if you write `npm run build`
