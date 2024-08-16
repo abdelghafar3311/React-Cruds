@@ -29,10 +29,10 @@ function AddSection({className}) {
   function clear() 
   {
     db.setSells(0);
-    window.localStorage.systemDetailsSells = db.sells;
+    window.localStorage.removeItem("systemDetailsSells");
 
     db.setBuys(0);
-    window.localStorage.systemDetailsBuys = db.buys;
+    window.localStorage.removeItem("systemDetailsBuys");
 
     notify("Success Clear Data", "success");
     handleClose();
