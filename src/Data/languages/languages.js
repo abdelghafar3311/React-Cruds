@@ -112,7 +112,8 @@ export const en = {
                 },
                 btnForm: {
                     btnAdd: "Add Product",
-                    btnUpload: "Upload Server"
+                    btnUpload: "Upload Server",
+                    know: "All Price is: "
                 }
             }
         }
@@ -292,7 +293,8 @@ export const ar = {
                 },
                 btnForm: {
                     btnAdd: "أضافة منتج",
-                    btnUpload: "رفع إلى الخادم"
+                    btnUpload: "رفع إلى الخادم",
+                     know: "سعر المشتريات: "
                 }
             }
         }

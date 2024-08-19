@@ -9,7 +9,7 @@ import { IoLanguageSharp,IoHome } from "react-icons/io5";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BsCheckCircleFill } from "react-icons/bs";
-
+import { MdOutlineDone } from "react-icons/md";
 // bootstrap
 import Nav from 'react-bootstrap/Nav';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -175,12 +175,12 @@ function NavBar() {
         <div className="Additional">
             <Nav  variant="dark" bg="dark" className="language-step">
                 <Dropdown data-bs-theme="dark">
-                  <Dropdown.Toggle id="dropdown-basic" variant="dark" className="dropdownMenu">
+                  <Dropdown.Toggle id="dropdown-basic" variant='dark' className="dropdownMenu">
                     <IoLanguageSharp />
                   </Dropdown.Toggle>
                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => {setLang("en");window.location.reload()}}>English</Dropdown.Item>
-                      <Dropdown.Item onClick={() => {setLang("ar");window.location.reload()}}>Arabic</Dropdown.Item>
+                      <Dropdown.Item onClick={() => {setLang("en");window.location.reload()}}>{lg === "en" && <MdOutlineDone className='text-success' />} English</Dropdown.Item>
+                      <Dropdown.Item onClick={() => {setLang("ar");window.location.reload()}}>{lg === "ar" && <MdOutlineDone className='text-success' />} Arabic</Dropdown.Item>
                    </Dropdown.Menu>
                 
                 </Dropdown>

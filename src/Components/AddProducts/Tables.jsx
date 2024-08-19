@@ -32,6 +32,8 @@ function Tables({className}) {
     const [localData, setLocalData] = useState([]) // local data
     const [error, setError] = useState(false); // error status
     const [mError, setMError] = useState("") // error message
+    // Know Price All Products Created
+    const [allPriceCreate, setAllPriceCreate] = useState({errorStatus: false,price: 0})
     // ---------------------------------------------------------------------- //
 
     // Random function
@@ -132,12 +134,30 @@ function Tables({className}) {
         }
     }
 
+    // Know The Price Product Local Which You Create Them.
+    function BuysAllProductsLocal() {
+        const totalBuys = localData.reduce((acc, item) => {
+            const price = item.price ? +item.price : 0;
+            const taxes = item.taxes ? +item.taxes : 0;
+            const ads = item.ads ? +item.ads : 0;
+            const count = item.count ? +item.count : 1;
+            return acc + ((price + taxes + ads) * count);
+        }, 0);
+        if(totalBuys > +modules.moneySystem){
+            setAllPriceCreate({errorStatus: true,price: totalBuys});
+            notify("Your money is not enough", "warn")
+        } else {
+            setAllPriceCreate({errorStatus: false,price: totalBuys});
+        }
+    }
+
 
     useEffect(() => {
         localData.map(item => {
             check(item);
             return item;
-        })
+        });
+        BuysAllProductsLocal();
     }, [localData])
 
     // upload data from local to server and this finally step
@@ -256,7 +276,8 @@ function Tables({className}) {
 
         <button className={`btn btn-outline-primary w-100 ${className[2]}`} onClick={createData}>{lang.createProducts.content.ProductsTable.btnForm.btnAdd}</button>
         
-        <div className="btnServerUpload">
+        <div className="btnServerUpload gap-1">
+            <button className={`btn rounded-5 disabled ${allPriceCreate.errorStatus? "btn-danger" : "btn-outline-dark"}`}>{lang.createProducts.content.ProductsTable.btnForm.know}: ${allPriceCreate.price}</button>
             <button className={`btn btn-success rounded-5 ${error? "disabled" : ""} ${localData.length <= 0? "disabled" : ""} ${className[3]}`} onClick={Post}>{lang.createProducts.content.ProductsTable.btnForm.btnUpload}</button>
         </div>
     
