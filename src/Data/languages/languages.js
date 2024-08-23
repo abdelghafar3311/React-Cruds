@@ -4,7 +4,8 @@ export const en = {
             searchPage: "Search Page",
             createProducts: "Create Products",
             createProduct: "Create Product",
-            clearData: "Clear Data"
+            clearDataBuys: "Clear Data Buys",
+            clearDataSells: "Clear Data Sells"
         },
         cards: {
             NumberOfProducts: "Products Number",
@@ -185,7 +186,9 @@ export const ar = {
             searchPage: "صفحة البحث",
             createProducts: "إنشاء منتجات",
             createProduct: "إنشاء منتج",
-            clearData: "حذف البيانات"
+            clearData: "حذف البيانات",
+            clearDataBuys: "حذف بيانات الشراء",
+            clearDataSells: "حذف بيانات المبيعات"
         },
         cards: {
             NumberOfProducts: "عدد المنتجات",

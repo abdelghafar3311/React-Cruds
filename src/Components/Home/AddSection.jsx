@@ -26,24 +26,50 @@ function AddSection({className}) {
   const handleShow = () => setShow(true); // show modal
 
   // here clear data from sells and buys
-  function clear() 
+  const [clearAction, setClearAction] = useState({message: "", fun: ""})
+  function clearBuys() 
+  {
+    db.setBuys(0);
+    window.localStorage.removeItem("systemDetailsBuys");
+
+    notify("Success Clear Data Buys", "success");
+    handleClose();
+  }
+
+  function clearSells() 
   {
     db.setSells(0);
     window.localStorage.removeItem("systemDetailsSells");
 
-    db.setBuys(0);
-    window.localStorage.removeItem("systemDetailsBuys");
-
-    notify("Success Clear Data", "success");
+    notify("Success Clear Data Sells", "success");
     handleClose();
   }
 
+  function clearType({type = "", message = ""})
+  {
+    if(type === "sells") {
+      setClearAction({
+        message: message,
+        fun: clearSells
+      })
+      handleShow();
+    } else {
+      setClearAction({
+        message: message,
+        fun: clearBuys
+      })
+      handleShow();
+    }
+  }
   return (
     <div className="Container">
 
       <div className="contentHeaderHome">
 
-        <button className={`btn btn-danger ${className}`} onClick={handleShow}>{lang.home.headerHomePage.clearData}</button>
+        <div className="d-flex align-items-center gap-1">
+          <button className={`btn btn-danger ${className}`} onClick={() => clearType({type: "buys", message: "Do you sure to clear data from buys ?"})}>{lang.home.headerHomePage.clearDataBuys}</button>
+          <button className={`btn btn-danger ${className}`} onClick={() => clearType({type: "sells", message: "Do you sure to clear data from sells ?"})}>{lang.home.headerHomePage.clearDataSells}</button>
+        </div>
         
         <div className="d-flex align-items-center gap-1 dir">
           
@@ -66,13 +92,13 @@ function AddSection({className}) {
           <Modal.Title>Massage For You</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Do you sure to clear data from sells and buys ?</Modal.Body>
+        <Modal.Body>{clearAction.message}</Modal.Body>
         
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="danger" onClick={clear}>
+          <Button variant="danger" onClick={clearAction.fun}>
             Clear
           </Button>
         </Modal.Footer>

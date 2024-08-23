@@ -21,7 +21,7 @@ import notify from '../../hook/useNotifaction';
 function TablesData({classNA = []}) { 
   // main values
   const dataF = Data();
-  const products = dataF.products
+  const products = dataF.products.length > 0 ? dataF.products : []  // security for products
   const lang = Languages();
   // useState for pagination
   const [itemOffset, setItemOffset] = useState(0);
