@@ -2,16 +2,21 @@ import React, {useState,useEffect} from 'react';
 // components
 import HeaderScreen from '../../Components/AddProducts/HeaderScreen';
 import Tables from '../../Components/AddProducts/Tables';
+import Loading from '../../Utils/Loading';
 // library
 import Joyride from 'react-joyride';
 // data Joyride
 import addProductsSteps from '../../Data/OfferSite/addProducts'
 
+
 function AddProductsPage() {
+   // check site is start or no
+   const [isClient, setIsClient] = useState(false);
   // useState Joyride
   const [runTour, setRunTour] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Check if the tour has been completed
     const isTourCompleted = localStorage.getItem('addProductsTour');
     if (!isTourCompleted) {
@@ -29,6 +34,9 @@ function AddProductsPage() {
       setRunTour(false);
     }
   };
+  if(isClient === false) {
+    return <Loading />
+  }
   return (
     <div>
         <Joyride steps={addProductsSteps} callback={handleJoyrideCallback} run={runTour} continuous showProgress showSkipButton  />

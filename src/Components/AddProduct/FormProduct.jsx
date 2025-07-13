@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 // css style
 import "../../ui/Form/form.css";
 // Data Functions => route: Data Folder
@@ -6,6 +6,7 @@ import Languages from "../../Data/languages/langFunction.js"; // fun to access d
 import { Data } from '../../Data/Context/context.jsx'; // fun to access context
 // hook
 import notify from '../../hook/useNotifaction.js'; // fun to create message
+import useComparison from '../../hook/useComparison.js';
 // library
 import { v4 as uuidv4 } from 'uuid'; // this create random id for product
 
@@ -24,6 +25,7 @@ function FormProduct({className}) {
    const [category, setCategory] = useState("");
    // -- catch context
    const products = Data();
+   // security value
 // --------------------------------------------------------------------- //
 
    // fun to create random id
@@ -65,48 +67,63 @@ function FormProduct({className}) {
      };
       // operation to know price product  
      let priceProduct = ((+price + +taxes + +ads) * +count);
-     // security for create > if your money not enough to create product not allow create  
-     if(priceProduct > +products.moneySystem){
-        notify("Your money is not enough, Please add money in system money to create the product","error")
-     } else {
-         p.push(product)
-         products.setProducts([...p])
-         window.localStorage.productsC = JSON.stringify(products.products);
+      // use comparison
+      const {states,message} = useComparison({name: name,typeData: "object", compare: products.products});
+      console.log(`error state: ${states} and message: ${message}`)
+     // security for create > if your money not enough to create product not allow create 
+     if(states)
+      {
+         notify(message,"warn")
+      } else
+      {
+         if(priceProduct > +products.moneySystem){
+            notify("Your money is not enough, Please add money in system money to create the product","error")
+         } else {
+            p.push(product)
+            products.setProducts([...p])
+            window.localStorage.productsC = JSON.stringify(products.products);
+      
+      
+            //   Add Buy Function here
+            products.setBuys(prev => {
+               let x = prev
+               x = +x + priceProduct;
+               window.localStorage.systemDetailsBuys = x;
+               return x;
+            })
+            //  Add Money System Function
+            products.setMoneySystem(prev => {
+               let x = prev
+               x = +x - priceProduct;
+               window.localStorage.moneySystem = x;
+               return x;
+            })
+            //  make all things normal after create
+            setName("");
+            setCategory("");
+            setCount(1);
+            setPrice(0);
+            setTaxes(0);
+            setAds(0);
+            setDiscount(0);
+            setGain(0);
+            //  show message for you say you create is success
+            notify("Success Create Product","success")
+         }
+     } 
     
-    
-          //   Add Buy Function here
-          products.setBuys(prev => {
-             let x = prev
-             x = +x + priceProduct;
-             window.localStorage.systemDetailsBuys = x;
-             return x;
-          })
-         //  Add Money System Function
-          products.setMoneySystem(prev => {
-            let x = prev
-            x = +x - priceProduct;
-            window.localStorage.moneySystem = x;
-            return x;
-          })
-         //  make all things normal after create
-         setName("");
-         setCategory("");
-         setCount(1);
-         setPrice(0);
-         setTaxes(0);
-         setAds(0);
-         setDiscount(0);
-         setGain(0);
-         //  show message for you say you create is success
-         notify("Success Create Product","success")
-     }
 
    
    }
 
+   // useEffect(() => {
+   //    console.log(`error type2 is: ${errorTyping.message}`);
+
+   // }, [errorTyping])
+
   return (
     <div className='alert alert-light m-2 mt-5'>
-        <h3 className="text-center">{lang.createProduct.content.title}</h3>
+        <h3 className="text-center text-2xl font-bold">{lang.createProduct.content.title}</h3>
          {/* Name */}
         <div className='control-form'>
            <label>{lang.createProduct.content.ProductForm.name}</label>

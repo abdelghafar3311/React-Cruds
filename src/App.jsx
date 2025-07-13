@@ -16,9 +16,6 @@ import AddProductsPage from './Pages/AddProductsPage/AddProductsPage';
 import SearchItemsData from './Pages/SearchItemsDataPage/SearchItemsData';
 
 
-
-
-
 function App() {
 
   document.title = "React Cruds"
@@ -26,18 +23,18 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <NavBar />
-         <Routes>
-          <Route element={<HomePage />} path='/'/>
-          <Route element={<AddProductPage />} path='/add-product'/>
-          <Route element={<ChangePage />} path='/ChangeProduct/:id'/>
-          <Route element={<AddProductsPage />} path='/add-products'/>
-          <Route element={<SearchItemsData />} path='/search-page'/>
-         </Routes>
-        <ToastContainer 
-         position='top-right'
-         transition={Zoom}
-        />
+          <NavBar />
+          <Routes>
+            <Route element={<HomePage />} path='/'/>
+            <Route element={<AddProductPage />} path='/add-product'/>
+            <Route element={<ChangePage />} path='/ChangeProduct/:id'/>
+            <Route element={<AddProductsPage />} path='/add-products'/>
+            <Route element={<SearchItemsData />} path='/search-page'/>
+          </Routes>
+          <ToastContainer 
+          position='top-right'
+          transition={Zoom}
+          />
       </BrowserRouter>
     </div>
   );

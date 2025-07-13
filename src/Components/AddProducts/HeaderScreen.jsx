@@ -1,4 +1,4 @@
-import React from 'react'
+
 // css file
 import "../../ui/headerAddProduct/header.css"
 

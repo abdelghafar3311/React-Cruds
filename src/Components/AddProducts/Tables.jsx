@@ -19,6 +19,7 @@ import notify from '../../hook/useNotifaction.js';
 
 // library
 import { v4 as uuidv4 } from 'uuid';
+import useComparison from '../../hook/useComparison.js';
 
 
 function Tables({className}) {
@@ -32,6 +33,7 @@ function Tables({className}) {
     const [localData, setLocalData] = useState([]) // local data
     const [error, setError] = useState(false); // error status
     const [mError, setMError] = useState("") // error message
+    const [errorIndex, setErrorIndex] = useState([])
     // Know Price All Products Created
     const [allPriceCreate, setAllPriceCreate] = useState({errorStatus: false,price: 0})
     // ---------------------------------------------------------------------- //
@@ -166,54 +168,65 @@ function Tables({className}) {
             check(localData[i]);
         }
 
+        const {states,message} = useComparison({typeData: "array",name: localData, compare: modules.products})
+        console.log("the states: ",states);
+        console.log(`message: ${message.mes} and indexs if found: `,message.index)
         if(error === true) {
             return null;
         } else  {
 
-            const totalBuys = localData.reduce((acc, item) => {
-                const price = item.price ? +item.price : 0;
-                const taxes = item.taxes ? +item.taxes : 0;
-                const ads = item.ads ? +item.ads : 0;
-                const count = item.count ? +item.count : 1;
-                return acc + ((price + taxes + ads) * count);
-              }, 0);
-
-            //   security money if not enough
-              if(totalBuys > +modules.moneySystem)
-              {
-                notify("Your money is not enough,please go to system of money and add money or translate to create the products", "error");
-              } else {
-                const db = localData;
-
-                modules.setProducts(prev => {
-                    const g = [...prev, ...db];
-                    console.log("db state:");
-                    console.log(g);
-                    window.localStorage.productsC = JSON.stringify(g);
-                    return g;
-                });
-                
-                modules.setBuys(prev => {
-                    let x = prev;
-                    x = +x + totalBuys
-                    window.localStorage.systemDetailsBuys = x;
-                    return x;
-                })
-                modules.setMoneySystem(prev => {
-                    let x = prev
-                    x = +x - totalBuys;
-                    window.localStorage.moneySystem = x;
-                    return x;
-                  })
-                setLocalData([]);
-                notify("Success Create Products","success");
-              }
-
-            
+            if(states) {
+                notify("Here error in your data name","error");
+                setErrorIndex(message.index)
+            } else {
+                const totalBuys = localData.reduce((acc, item) => {
+                    const price = item.price ? +item.price : 0;
+                    const taxes = item.taxes ? +item.taxes : 0;
+                    const ads = item.ads ? +item.ads : 0;
+                    const count = item.count ? +item.count : 1;
+                    return acc + ((price + taxes + ads) * count);
+                  }, 0);
+    
+                //   security money if not enough
+                  if(totalBuys > +modules.moneySystem)
+                  {
+                    notify("Your money is not enough,please go to system of money and add money or translate to create the products", "error");
+                  } else {
+                    const db = localData;
+    
+                    modules.setProducts(prev => {
+                        const g = [...prev, ...db];
+                        console.log("db state:");
+                        console.log(g);
+                        window.localStorage.productsC = JSON.stringify(g);
+                        return g;
+                    });
+                    
+                    modules.setBuys(prev => {
+                        let x = prev;
+                        x = +x + totalBuys
+                        window.localStorage.systemDetailsBuys = x;
+                        return x;
+                    })
+                    modules.setMoneySystem(prev => {
+                        let x = prev
+                        x = +x - totalBuys;
+                        window.localStorage.moneySystem = x;
+                        return x;
+                      })
+                    setLocalData([]);
+                    notify("Success Create Products","success");
+                  }
+            }            
             
         }
     }
 
+    function getError(index) {
+        const existsTy = errorIndex.some(item => item === index);
+        console.log("the fun work and is : ", existsTy)
+        return existsTy
+    }
    
   return (
     <div className='alert alert-light mt-5'>
@@ -224,18 +237,18 @@ function Tables({className}) {
             </p>
         </Alert>
 
-        <div className="headerTables">
-            <h2>{lang.createProducts.content.title}</h2>
+        <div className="headerTables mb-3">
+            <h2 className="text-2xl font-bold text-slate-800">{lang.createProducts.content.title}</h2>
 
-            <div className="AddForm">
+            <div className="AddForm flex items-center">
                 <input className={className[0]}  type="number" value={limit} onChange={(e) => {setLimit(+e.target.value)}} placeholder={lang.createProducts.content.placeholderLimit}/>
-                <button className={className[1]} onClick={createDataMore}><IoIosAdd /></button>
+                <button className={`${className[1]} h-[2.1rem]`} onClick={createDataMore}><IoIosAdd /></button>
             </div>
 
         </div>
 
         <div className="TableCR">
-            <Table striped bordered hover style={{direction: lg === "ar"? "rtl" : "ltr"}}>
+            <table style={{direction: lg === "ar"? "rtl" : "ltr"}} className='tabled'>
                 <thead>
                     <tr>
                     <th>#</th>
@@ -252,18 +265,18 @@ function Tables({className}) {
                     {
                         localData.length > 0? (localData.map((item,i) => {
                             return(
-                                <tr>
+                                <tr className={`${getError(i)? "bg-red-300" : ""}`}>
                                     <td>{i + 1}</td>
                                     <td><input type="text" value={item.name} onChange={(e) => handleChange(i,"name",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.name}/></td>
                                     <td><input type="text" value={item.category} onChange={(e) => handleChange(i,"category",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.Category}/></td>
-                                    <th className='thContainer'>
+                                    <td className='thContainer'>
                                         <td><input type="number" value={item.price} onChange={(e => handleChange(i,"price",e.target.value))} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.price}/></td>
                                         <td><input type="number" value={item.taxes} onChange={(e) => handleChange(i,"taxes",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.taxes}/></td>
                                         <td><input type="number" value={item.ads} onChange={(e) => handleChange(i,"ads",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.ads}/></td>
                                         <td><input type="number" value={item.gain} onChange={(e) => handleChange(i,"gain",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.gain}/></td>
                                         <td><input type="number" value={item.discount} onChange={(e) => handleChange(i,"discount",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.discount} className={`${+item.discount > +item.gain || +item.discount === +item.gain? "border-danger text-danger" : ""}`} /></td>
                                         <td><span className='total'>{lang.createProducts.content.ProductsTable.placeholderFormsRows.total}(<b>{+item.price + +item.taxes + +item.ads + +item.gain - +item.discount}</b>$)</span></td>
-                                    </th>
+                                    </td>
                                     <td><input type="number" value={item.count} onChange={(e) => handleChange(i,"count",e.target.value)} placeholder={lang.createProducts.content.ProductsTable.placeholderFormsRows.count} /></td>
                                     <td><button className='btn btn-danger' onClick={() => deleteOneItem(i)}><MdOutlineDeleteOutline /></button></td>
                                 </tr>
@@ -271,7 +284,7 @@ function Tables({className}) {
                         })) : <tr><td colSpan={6}><p className='alert alert-warning text-center'>The limit is zero</p></td></tr>
                     }
                 </tbody>
-            </Table>
+            </table>
         </div>
 
         <button className={`btn btn-outline-primary w-100 ${className[2]}`} onClick={createData}>{lang.createProducts.content.ProductsTable.btnForm.btnAdd}</button>

@@ -6,6 +6,7 @@ import Languages from "../../Data/languages/langFunction.js";
 import { Data } from '../../Data/Context/context.jsx';
 // hook
 import notify from '../../hook/useNotifaction.js';
+import useComparison from '../../hook/useComparison.js';
 
 function FormChange() {
    const product = Data();
@@ -65,54 +66,62 @@ function FormChange() {
    function alreadyUpdate() {
       const priceProduct = ((+price + +taxes + +ads) * +count); // price product
       // security for money if not enough
-      if(priceProduct > money) {
-         notify("your money is not enough", "error")
-      } else {
-         // products
-         const s = product.products;
-         // put data in products
-         s[index].name = name;
-         s[index].category = category;
-         s[index].count = count;
-         s[index].price = price;
-         s[index].taxes = taxes;
-         s[index].ads = ads; 
-         s[index].gain = gain;
-         s[index].discount = discount;
-         // operation for buys and money (update all them)
-         buys = +buys + priceProduct;
-         money = +money - priceProduct;
-         // push updates buys
-         product.setBuys(prev => {
-            let x = prev;
-            x = buys
-            window.localStorage.systemDetailsBuys = x;
-            return x;
-         })
-         // push updates money
-         product.setMoneySystem(prev => {
-            let x = prev
-            x = money;
-            window.localStorage.moneySystem = x;
-            return x;
-         })
-         // put data in main database
-         product.setProducts([...s]);
-         // save data in storage
-         window.localStorage.productsC = JSON.stringify(product.products);
-         // output message
-         notify("Success Change Product, After Tow Seconds You Will Go To Home Page","success");
-         // go to home page
-         setTimeout(() => {
-            window.location.pathname = '/';
-         }, 2000);
-      }
+       // use comparison
+       const {states,message} = useComparison({name: {nameChange: name,nameRight: product.products[index].name},typeData: "change", compare: product.products});
+
+       if(states) {
+         notify(message,"warn");
+       } else {
+         if(priceProduct > money) {
+            notify("your money is not enough", "error")
+         } else {
+            // products
+            const s = product.products;
+            // put data in products
+            s[index].name = name;
+            s[index].category = category;
+            s[index].count = count;
+            s[index].price = price;
+            s[index].taxes = taxes;
+            s[index].ads = ads; 
+            s[index].gain = gain;
+            s[index].discount = discount;
+            // operation for buys and money (update all them)
+            buys = +buys + priceProduct;
+            money = +money - priceProduct;
+            // push updates buys
+            product.setBuys(prev => {
+               let x = prev;
+               x = buys
+               window.localStorage.systemDetailsBuys = x;
+               return x;
+            })
+            // push updates money
+            product.setMoneySystem(prev => {
+               let x = prev
+               x = money;
+               window.localStorage.moneySystem = x;
+               return x;
+            })
+            // put data in main database
+            product.setProducts([...s]);
+            // save data in storage
+            window.localStorage.productsC = JSON.stringify(product.products);
+            // output message
+            notify("Success Change Product, After Tow Seconds You Will Go To Home Page","success");
+            // go to home page
+            setTimeout(() => {
+               window.location.pathname = '/';
+            }, 2000);
+         }
+       }
+      
       
    }
 
   return (
     <div className='alert alert-light m-2 mt-5'>
-        <h3 className="text-center">{lang.updateProduct.content.title} {id}</h3>
+        <h3 className="text-center text-2xl font-bold text-slate-800">{lang.updateProduct.content.title} <span className='text-green-600 font-extralight'>{id}</span></h3>
          {/* Name */}
         <div className='control-form'>
            <label>{lang.updateProduct.content.ProductForm.name}</label>

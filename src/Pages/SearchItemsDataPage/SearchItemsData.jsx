@@ -17,10 +17,14 @@ import "../../ui/SearchMode/search.css";
 // icons
 import { FaAngleDown } from "react-icons/fa6";
 import { MdOutlineDone } from "react-icons/md";
+// loading component from utils direction
+import Loading from '../../Utils/Loading';
 
 
 
 function SearchItemsData() {
+  // check site is start or no
+  const [isClient, setIsClient] = useState(false);
   // main values
   const lang = Languages();
   const dataF = Data();
@@ -255,6 +259,7 @@ function SearchItemsData() {
  
 
   useEffect(() => {
+    setIsClient(true);
     function searchMode() {
       let resSearch = [];
      // loop to search value 
@@ -312,7 +317,7 @@ function SearchItemsData() {
   function ShowResultSearching() {
     if(nOrC === "N") {
       if(!matchedData) {
-        return <div className='alert alert-info text-center w-100'>{lang.searchPage.warning}</div>;
+        return <div className='bg-yellow-400 p-2 rounded shadow-md text-center shadow-yellow-200 w-[50vw] mt-10 animate-bounce text-yellow-600 font-bold text-2xl border border-yellow-600'>{lang.searchPage.warning}</div>;
       }
       return (
         <>
@@ -346,7 +351,7 @@ function SearchItemsData() {
       )
     } else {
       if(!matchedData) {
-        return <div className='alert alert-info text-center w-100'>{lang.searchPage.warning}</div>;
+        return <div className='bg-yellow-400 p-2 rounded shadow-md text-center shadow-yellow-200 w-[50vw] mt-10 animate-bounce text-yellow-600 font-bold text-2xl border border-yellow-600'>{lang.searchPage.warning}</div>;
       }
       return (
         <>
@@ -383,7 +388,7 @@ function SearchItemsData() {
   }
 
 
-
+  // result data if data not found already = []
   if(products.length <= 0) {
     return(
       <div className='CONTAINER-SEARCH-MODE'>
@@ -408,13 +413,17 @@ function SearchItemsData() {
       </header>
 
       <div className="container-result-data">
-        <div className='alert alert-info text-center w-100'>{lang.searchPage.warning}</div>
+        <div className='bg-yellow-400 p-2 rounded shadow-md text-center shadow-yellow-200 w-[50vw] mt-10 animate-bounce text-yellow-600 font-bold text-2xl border border-yellow-600'>{lang.searchPage.warning}</div>
       </div>
 
     </div>
     )
   }
       
+
+  if(isClient === false) {
+    return <Loading />
+  }
 
   return (
     <div className='CONTAINER-SEARCH-MODE'>

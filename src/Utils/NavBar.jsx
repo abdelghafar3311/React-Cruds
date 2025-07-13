@@ -38,7 +38,7 @@ function NavBar() {
   // security value
   const [security, setSecurity] = useState({
     change: false,
-    add: false,
+    add: true,
     translate: false
   })
   // modal
@@ -174,13 +174,13 @@ function NavBar() {
 
         <div className="Additional">
             <Nav  variant="dark" bg="dark" className="language-step">
-                <Dropdown data-bs-theme="dark">
-                  <Dropdown.Toggle id="dropdown-basic" variant='dark' className="dropdownMenu">
+                <Dropdown data-bs-theme="dark" className='flex'>
+                  <Dropdown.Toggle id="dropdown-basic" variant='dark' className="dropdownMenu flex justify-center items-center">
                     <IoLanguageSharp />
                   </Dropdown.Toggle>
                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => {setLang("en");window.location.reload()}}>{lg === "en" && <MdOutlineDone className='text-success' />} English</Dropdown.Item>
-                      <Dropdown.Item onClick={() => {setLang("ar");window.location.reload()}}>{lg === "ar" && <MdOutlineDone className='text-success' />} Arabic</Dropdown.Item>
+                      <Dropdown.Item className='flex items-center' onClick={() => {setLang("en");window.location.reload()}}>{lg === "en" && <MdOutlineDone className='text-success' />} English</Dropdown.Item>
+                      <Dropdown.Item className='flex items-center' onClick={() => {setLang("ar");window.location.reload()}}>{lg === "ar" && <MdOutlineDone className='text-success' />} Arabic</Dropdown.Item>
                    </Dropdown.Menu>
                 
                 </Dropdown>
@@ -287,7 +287,7 @@ function NavBar() {
           <div className="">
               {error.state? error.massage.map((err) => {
                 return (
-                  <p className={`mt-3 alert ${err.type === "err"? "alert-danger" : "alert-success"}`}>{err.type === "err"? <IoIosCloseCircle/> : <BsCheckCircleFill /> } {err.ms}</p>
+                  <p className={`mt-3 alert flex gap-2 items-center ${err.type === "err"? "alert-danger" : "alert-success"}`}>{err.type === "err"? <IoIosCloseCircle/> : <BsCheckCircleFill /> } {err.ms}</p>
                 )
               }) : ""}
           </div>

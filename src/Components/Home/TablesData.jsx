@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useMemo } from 'react';
 // css files
 import "../../ui/Tables/table.css";
 // bootstrap
@@ -21,7 +21,9 @@ import notify from '../../hook/useNotifaction';
 function TablesData({classNA = []}) { 
   // main values
   const dataF = Data();
-  const products = dataF.products.length > 0 ? dataF.products : []  // security for products
+  const products = useMemo(() => {
+    return dataF.products.length > 0 ? dataF.products : [];
+  }, [dataF.products]);  // security for products
   const lang = Languages();
   // useState for pagination
   const [itemOffset, setItemOffset] = useState(0);
@@ -47,6 +49,8 @@ function TablesData({classNA = []}) {
   const currentItems = products.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(products.length / Limit);
 
+ 
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * Limit) % products.length;
     console.log(
@@ -55,6 +59,7 @@ function TablesData({classNA = []}) {
     setItemOffset(newOffset);
   };
   // ----------------------------------------------------------- //
+
 
   // this fun to get index to number sells function
   function getIndexItem(id) {
@@ -264,7 +269,7 @@ function TablesData({classNA = []}) {
               <td>{+item.price + +item.taxes + +item.ads + +item.gain - +item.discount}</td>
               <td>{(+item.price + +item.taxes + +item.ads + +item.gain - +item.discount) * +item.count}</td>
               <td><Link to={`/ChangeProduct/${item.id}`} className='btn btn-success'>{lang.home.table.buttons.change}</Link></td>
-              <td><button className='btn btn-outline-danger' onClick={() => typeFunction({type: "sell-one",id : item.id,massage: `Do you sure about sell one about product called : ${item.name} and has id : ${item.id}. you have ${item.count} packages about this product`})}>{lang.home.table.buttons.sellOne}</button></td>
+              <td><button className='btn btn-outline-danger flex flex-row' onClick={() => typeFunction({type: "sell-one",id : item.id,massage: `Do you sure about sell one about product called : ${item.name} and has id : ${item.id}. you have ${item.count} packages about this product`})}>{lang.home.table.buttons.sellOne}</button></td>
               <td><button className={`btn btn-outline-danger ${item.count > 2? "" : "disabled"}`} onClick={() => SellNumber(item.id)}>{lang.home.table.buttons.sellNumber}</button></td>
               <td><button className='btn btn-danger' onClick={() => typeFunction({type: "sell-all",id: item.id,massage: `Do you sure about sell all the product called : ${item.name} and has id : ${item.id}`})}>{lang.home.table.buttons.sellAll}</button></td>
               <td><button className='btn btn-danger' onClick={() => {typeFunction({type: "del-one",id: item.id,massage: `Do you sure about delete this product called: ${item.name} and has id: ${item.id}`})}}>{lang.home.table.rowMain.delete}</button></td>
@@ -276,13 +281,15 @@ function TablesData({classNA = []}) {
 
  
 
+ 
 
   return (
-    <div className='p-2 mt-4 container'>
-        <div className="d-flex justify-content-between align-items-center p-2 mb-2" style={{direction: lg === "ar"? "rtl" : "ltr"}}>
-          <h2 className='text-center'>{lang.home.table.title}</h2>
+    <div className='p-2 mt-4 bg-white'>
+        <div className="d-flex justify-between items-center p-2 mb-2" style={{direction: lg === "ar"? "rtl" : "ltr"}}>
+          <h2 className='text-2xl font-bold'>{lang.home.table.title}</h2>
           <button className={`btn btn-outline-danger ${products.length > 1? "" : "disabled"}`} onClick={() => typeFunction({type: "del-all",massage: "Do you sure you wand delete all?"})}>{lang.home.table.buttons.delAll}</button>
         </div>
+
         
          <div className="rtm">
             <Table striped bordered hover style={{direction: lg === "ar"? "rtl" : "ltr"}}>
@@ -316,9 +323,9 @@ function TablesData({classNA = []}) {
           pageRangeDisplayed={5}
           pageCount={pageCount}
           previousLabel={<BsCaretLeft />}
-          containerClassName='pagination'
+          containerClassName='pagination overflow-hidden items-center'
           pageClassName='page-item'
-          pageLinkClassName='page-link'
+          pageLinkClassName='page-link h-[1.95rem] flex justify-center items-center'
           previousLinkClassName='page-link'
           nextLinkClassName='page-link'
           previousClassName='page-item'

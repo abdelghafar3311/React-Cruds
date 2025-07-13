@@ -17,13 +17,13 @@
 
 
 
-.tableHomePage th, .tableHomePage td {
+.tableHomePage th, .tableHomePage td , .tabled th , .tabled td {
     border: 1px solid #a2a2a2;
     padding: 10px;
     text-align: center;
 }
 
-.tableHomePage th{
+.tableHomePage th, .tabled th{
     background-color: #253040;
     color: #fff;
     text-transform: capitalize;
@@ -32,4 +32,17 @@
 .rtm {
     overflow-y: auto;
     width: 100%;
+}
+
+.tabled {
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.tabled thead tr{
+    background: #b4d3f8;
+}
+
+.tabled tr:nth-child(even) {
+    background: #eee;
 }

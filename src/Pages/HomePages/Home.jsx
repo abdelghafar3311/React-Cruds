@@ -11,18 +11,24 @@ import TablesData from '../../Components/Home/TablesData';
 import "../../ui/CardStyle/card.css"
 // data folder
 import Languages from '../../Data/languages/langFunction'
-import { Data } from '../../Data/Context/context'
+import { Data } from '../../Data/Context/context';
+// loading utils
+import Loading from '../../Utils/Loading';
 
 
 function HomePage() {
   // main values
   const lang = Languages();
   const cardsData = Data();
+  // check site is start or no
+  const [isClient, setIsClient] = useState(false)
   // useState Joyride
   const [runTour, setRunTour] = useState(false);
 
 
   useEffect(() => {
+     // check site is ready or no
+    setIsClient(true)
     // catch if data found or no
     if(window.localStorage.getItem("systemDetailsBuys") && window.localStorage.systemDetailsBuys !== null) {
     cardsData.setBuys(window.localStorage.systemDetailsBuys);
@@ -51,6 +57,12 @@ function HomePage() {
   };
   
 
+  if(isClient === false) {
+    return(
+      <Loading />
+    )
+  }
+
   return (
     <div>
         <Joyride steps={HomeSteps} run={runTour} continuous showProgress showSkipButton callback={handleJoyrideCallback}/>
@@ -66,4 +78,5 @@ function HomePage() {
   )
 }
 
-export default HomePage
+export default HomePage;
+
